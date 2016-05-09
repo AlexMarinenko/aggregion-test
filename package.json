@@ -1,0 +1,43 @@
+{
+  "name": "test",
+  "version": "1.0.0",
+  "description": "A test project",
+  "main": "index.js",
+  "scripts": {
+    "test": "export NODE_ENV=test && ./node_modules/.bin/istanbul cover _mocha",
+    "start": "export NODE_ENV=production && node index.js"
+  },
+  "engines": {
+    "node": "=4.2.6"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/asmsoft/aggregion-test.git"
+  },
+  "keywords": [
+    "Test",
+    "Aggregion"
+  ],
+  "author": "Alex S. Marinenko <alex.marinenko@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/asmsoft/aggregion-test/issues"
+  },
+  "homepage": "https://github.com/asmsoft/aggregion-test#readme",
+  "dependencies": {
+    "body-parser": "^1.15.1",
+    "config": "^1.20.1",
+    "express": "^4.13.4",
+    "express-jwt": "^3.4.0",
+    "jsonwebtoken": "^6.2.0",
+    "mongoose": "^4.4.15",
+    "mongoose-nested-set": "0.0.7",
+    "sha1": "^1.1.1"
+  },
+  "devDependencies": {
+    "istanbul": "^0.4.3",
+    "chai": "^3.5.0",
+    "chai-http": "^2.0.1",
+    "mocha": "^2.4.5"
+  }
+}
