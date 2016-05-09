@@ -6,6 +6,6 @@ var tokenService = require('./services/token');
 
 app.use('/v1/api', authApi);
 app.use('/v1/api/comment', commentApi);
-app.use(tokenService.getExpressJWT({ path: [ '/v1/api/login', '/v1/api/register' ] }));
+app.use(tokenService.getExpressJWT({path: ['/v1/api/login', '/v1/api/register']}));
 
 module.exports = app;

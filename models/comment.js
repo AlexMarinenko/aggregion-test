@@ -1,12 +1,11 @@
-var mongoose = require('mongoose'),    
-    Schema = mongoose.Schema,
-    ObjectId = mongoose.Schema.Types.ObjectId;
+var mongoose = require('mongoose'),
+    Schema = mongoose.Schema;
 
-var CommentSchema = new Schema({  
-  userid: String,  
-  txt: String,
-  lft: Number,
-  rgt: Number
+var CommentSchema = new Schema({
+    userid: String,
+    txt: String,
+    lft: Number,
+    rgt: Number
 });
 
 var Comment = mongoose.model('Comment', CommentSchema);

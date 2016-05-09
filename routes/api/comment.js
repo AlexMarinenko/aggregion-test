@@ -8,22 +8,22 @@ var router = express.Router();
 
 router.use(bodyParser.json());
 
-router.post('/add', function (request, response){		
+router.post('/add', function (request, response) {
 
-	if (!request.body.txt){
-		response.status(500).json({ message: 'txt required' });
-		return;
-	}
+    if (!request.body.txt) {
+        response.status(500).json({message: 'txt required'});
+        return;
+    }
 
-	tokenService.extractUserFromRequest(request, function (err, user){
-		commentRepository.add( user.userid, request.body.txt, request.body.parentCommentId, function (err, comment){
-			if (!err){
-				response.status(200).json(comment);
-				return;	
-			}			
-			response.status(500).json( { result: false, message: err } );			
-		});
-	});
+    tokenService.extractUserFromRequest(request, function (err, user) {
+        commentRepository.add(user.userid, request.body.txt, request.body.parentCommentId, function (err, comment) {
+            if (!err) {
+                response.status(200).json(comment);
+                return;
+            }
+            response.status(500).json({result: false, message: err});
+        });
+    });
 
 });
 

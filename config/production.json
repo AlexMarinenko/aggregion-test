@@ -1,5 +1,5 @@
 {
-	"dbURI": "mongodb://localhost/prod-db",
-	"port": 9090,
-	"secretKey": "production secret key"
+  "dbURI": "mongodb://localhost/prod-db",
+  "port": 9090,
+  "secretKey": "production secret key"
 }
