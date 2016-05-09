@@ -2,7 +2,7 @@ var config = require('config');
 var chai = require('chai');
 var expect = chai.expect;
 var chaiHttp = require('chai-http');
-var commentRepository = require('../../models/comment');
+var commentRepository = require('../../repositories/commentRepository');
 var mongoose = require('mongoose');
 
 chai.use(chaiHttp);

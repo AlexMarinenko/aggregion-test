@@ -1,7 +1,7 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var router = express.Router();
-var commentRepository = require('../../models/comment');
+var commentRepository = require('../../repositories/commentRepository');
 var tokenService = require('../../services/token');
 
 var router = express.Router();
