@@ -9,8 +9,6 @@ chai.use(chaiHttp);
 
 var apiBaseUrl = 'http://localhost:9090';
 
-var server;
-
 describe('Authentication functions tests', function () {
 
     before(function () {

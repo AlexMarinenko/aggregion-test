@@ -17,16 +17,34 @@ router.post('/add', function (request, response) {
 
     tokenService.extractUserFromRequest(request, function (err, user) {
         commentRepository.add(user.userid, request.body.txt, request.body.parentCommentId, function (err, comment) {
-            if (!err) {
+            if (err) {
+                response.status(500).json({message: err});
+            }else{
                 response.status(200).json(comment);
-                return;
             }
-            response.status(500).json({result: false, message: err});
         });
     });
 
 });
 
-module.exports = router;
+router.get('/depth', function (request, response){
+    commentRepository.getMaxNestedLevel(function(err, result){
+        if (err) {
+            response.status(500).json({message: err});
+        }else {
+            response.status(200).json(result);
+        }
+    });
+});
 
-//curl -X POST --data '{ "comment": "comment1", "parentCommentId": "123" }' -H 'Content-type: application/json' -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXIyIiwidXNlcmlkIjoiNTcyZmU2MTNkYzE5YmNjMzY5YjJhZjE0IiwiaWF0IjoxNDYyNzU3Mzk5fQ.CUYrENIrwD_WQhBcmsR3oJkFwrDs1wVKus4UMzXud3M' http://localhost:9090/v1/api/comment/add
+router.get('/list', function (request, response) {
+    commentRepository.list(function (err, comments){
+        if (err) {
+            response.status(500).json({message: err});
+        }else {
+            response.status(200).json(comments);
+        }
+    });
+});
+
+module.exports = router;

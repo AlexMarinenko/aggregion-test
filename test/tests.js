@@ -4,12 +4,6 @@ var mongoose = require('mongoose');
 
 var server;
 
-function importTest(name, path) {
-    describe(name, function () {
-        require(path);
-    });
-}
-
 describe("Integration tests", function () {
 
     before(function () {
@@ -23,10 +17,13 @@ describe("Integration tests", function () {
 
     require('./api/authTests.js');
     require('./api/commentTests.js');
+    require('./api/userTests.js');
 
 
     after(function () {
-        server.close();
+        mongoose.connection.db.dropDatabase(function (){
+            server.close();
+        });
     });
 });
 

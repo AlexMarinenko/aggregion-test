@@ -25,6 +25,7 @@
   },
   "homepage": "https://github.com/asmsoft/aggregion-test#readme",
   "dependencies": {
+    "async": "^2.0.0-rc.4",
     "body-parser": "^1.15.1",
     "config": "^1.20.1",
     "express": "^4.13.4",

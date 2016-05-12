@@ -9,7 +9,6 @@ chai.use(chaiHttp);
 
 var apiBaseUrl = 'http://localhost:9090';
 
-var server;
 var token;
 var rootNodeId;
 
@@ -127,10 +126,11 @@ describe('Comments functions tests', function () {
         });
 
         it('Add comment with authorized user but wrong parentCommentId returns 500', function (done) {
+
             chai
                 .request(apiBaseUrl)
                 .post('/v1/api/comment/add')
-                .send({txt: 'text', parentCommentId: 1234})
+                .send({txt: 'text', parentCommentId: '17343b9dcd574559b9cb860f'})
                 .set('Authorization', 'Bearer ' + token)
                 .end(function (err, response) {
 
@@ -140,9 +140,30 @@ describe('Comments functions tests', function () {
                     result = response.body;
 
                     expect(result).to.be.not.null;
-                    expect(result.result).to.be.false;
                     expect(result.message).to.be.equal("Parent comment was not found");
 
+                    done();
+
+                });
+        });
+
+
+        it('List method returns the whole tree', function (done){
+            chai
+                .request(apiBaseUrl)
+                .get('/v1/api/comment/list')
+                .send()
+                .set('Authorization', 'Bearer ' + token)
+                .end(function (err, response) {
+
+                    expect(err).to.be.null;
+                    expect(response).to.have.status(200);
+
+                    result = response.body;
+
+
+                    expect(result).to.be.not.null;
+                    expect(result.length).to.be.equal(4);
                     done();
 
                 });
@@ -197,6 +218,8 @@ describe('Comments functions tests', function () {
                 });
             });
         });
+
     });
+
 
 });

@@ -1,39 +1,59 @@
+var mongoose = require('mongoose');
 var Comment = require('../models/comment');
+var async = require('async');
 
 addRoot = function (userid, txt, cb) {
     var comment = new Comment({userid: userid, txt: txt, lft: 1, rgt: 2});
     comment.save(function (err, storedComment) {
         cb && cb(err, storedComment);
     });
-}
+};
 
 addLeafAfter = function (userid, txt, childComment, cb) {
     var rgt = childComment.rgt;
     addLeaf(userid, txt, rgt, cb);
-}
+};
 
 addNewLeaf = function (userid, txt, parentComment, cb) {
     var lft = parentComment.lft;
     addLeaf(userid, txt, lft, cb);
-}
+};
 
 addLeaf = function (userid, txt, point, cb) {
     Comment.update({rgt: {$gt: point}}, {$inc: {rgt: 2}}, {multi: true}, function (err, affected) {
+
+        if (err){
+            cb && cb(err, null);
+            return;
+        }
+
         Comment.update({lft: {$gt: point}}, {$inc: {lft: 2}}, {multi: true}, function (err, affected) {
+
+            if (err){
+                cb && cb(err, null);
+                return;
+            }
+
             var comment = new Comment({userid: userid, txt: txt, lft: point + 1, rgt: point + 2});
             comment.save(function (err, storedComment) {
                 cb && cb(err, storedComment);
             });
         });
     });
-}
+};
+
+exports.list = function (cb){
+    Comment.find({}, null, { $sort: { lft: 1 } }, function (err, items){
+        cb && cb(err, items);
+    });
+};
 
 
 exports.findById = function (id, cb) {
-    Comment.findOne({_id: id}, function (err, result) {
+    Comment.findOne({_id: id }, function (err, result) {
         cb && cb(err, result);
     })
-}
+};
 
 exports.add = function (userId, txt, parentCommentId, cb) {
 
@@ -43,11 +63,23 @@ exports.add = function (userId, txt, parentCommentId, cb) {
     }
 
     Comment.findById(parentCommentId, function (err, parentComment) {
+
+        if (err){
+            cb && cb(err, null);
+            return;
+        }
+
         if (parentComment) {
             Comment.findOne({
                 "lft": {$gt: parentComment.lft},
                 "rgt": {$lt: parentComment.rgt}
             }, null, {sort: {rgt: -1}}, function (err, childComment) {
+
+                if (err){
+                    cb && cb(err, null);
+                    return;
+                }
+
                 if (childComment) {
                     addLeafAfter(userId, txt, childComment, cb);
                 } else {
@@ -68,6 +100,7 @@ exports.getUsersByCommentsCount = function (cb) {
 };
 
 exports.getMaxNestedLevel = function (cb) {
+
     Comment.aggregate({
         $project: {
             lft: 1,
@@ -76,17 +109,30 @@ exports.getMaxNestedLevel = function (cb) {
             diff: {$subtract: ['$rgt', '$lft']}
         }
     }, {$match: {diff: 1}}, function (err, comments) {
-        var count = 0;
+
+        if (err){
+            cb && cb(err, null);
+            return;
+        }
+
         var max = 0;
-        comments.forEach(function (comment) {
+
+        async.eachLimit(comments, 2, function (comment, complete){
+
             Comment.find({lft: {$lt: comment.lft}, rgt: {$gt: comment.rgt}}, function (err, result) {
-                count++;
-                if (max < result.length) max = result.length;
-                if (comments.length == count) {
-                    cb && cb(err, max);
+
+                if (err){
+                    cb && cb(err, null);
+                }else{
+                    if (max < result.length) max = result.length;
                 }
+
+                complete();
+
             });
+        }, function (err){
+            cb && cb(err, max);
         });
 
     });
-}
+};
